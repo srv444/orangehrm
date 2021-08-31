@@ -20,7 +20,7 @@
 		</plugins>
 	</build>
 	<dependencies>
-	   <!-- Selenium libraries -->
+		<!-- Selenium libraries -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
@@ -70,6 +70,17 @@
 			<artifactId>monte-screen-recorder</artifactId>
 			<version>0.7.7.0</version>
 		</dependency>
-		
+		<!-- Cucumber library -->
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>6.11.0</version>
+		</dependency>
+		<!-- Cucumber TestNG library -->
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-testng</artifactId>
+			<version>6.11.0</version>
+		</dependency>
 	</dependencies>
 </project>

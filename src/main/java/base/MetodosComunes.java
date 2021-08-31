@@ -38,7 +38,7 @@ public MetodosComunes() {
 
 
 public WebDriver initBrowser(String URL, String browserName) throws MalformedURLException {
-	Boolean remote =true;
+	Boolean remote =false;
 	String remoteURL=System.getProperty("URL_REMOTE");
 	DesiredCapabilities desCap = new DesiredCapabilities();
 	ChromeOptions option = new ChromeOptions();

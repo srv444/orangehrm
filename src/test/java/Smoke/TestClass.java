@@ -9,6 +9,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
+import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
@@ -30,7 +31,7 @@ public class TestClass extends MetodosComunes {
 	
 	@Parameters(value= {"browser"})
 	@BeforeTest
-	public void initWebElements(String browser) throws MalformedURLException {
+	public void initWebElements(@Optional("chrome") String browser) throws MalformedURLException {
 		 PropFileHelper obj = new PropFileHelper();
 		 obj.getSystemProp();
 		driver = initBrowser(url,browser);

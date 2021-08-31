@@ -6,6 +6,7 @@ import java.net.SocketException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 //import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -268,8 +269,8 @@ public class Base extends TestListenerAdapter {
 	 */
 	public void reviewElement(WebElement element) throws Exception {
 		try {
-			// set timeout
-			wait = new WebDriverWait(driver, 60);
+			// set timeout 
+			wait = new WebDriverWait(driver, Duration.ofSeconds(60));
 			wait.until(ExpectedConditions.visibilityOf(element));
 			highlighElement(element);
 			Reporter.log("Web Element is visible by locatior ---> <b>" + element.toString().split("->")[1]+"</b>", true);
