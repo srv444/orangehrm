@@ -1,4 +1,4 @@
-package Smoke;
+package smoke;
 
 import java.net.MalformedURLException;
 import java.time.Duration;

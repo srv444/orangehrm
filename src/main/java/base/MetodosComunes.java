@@ -5,12 +5,14 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Reporter;
@@ -36,9 +38,16 @@ public MetodosComunes() {
 }
 
 
-
+/**
+ * @throws Exception
+ * @Description get text from the webElement
+ * @Author Sergio Ramones
+ * @Date 04-JUN-2021 
+ * @Parameter WebElement
+ * @return String
+ */
 public WebDriver initBrowser(String URL, String browserName) throws MalformedURLException {
-	Boolean remote =false;
+	Boolean remote =true;
 	String remoteURL=System.getProperty("URL_REMOTE");
 	DesiredCapabilities desCap = new DesiredCapabilities();
 	ChromeOptions option = new ChromeOptions();
@@ -127,7 +136,14 @@ public WebDriver initBrowser(String URL, String browserName) throws MalformedURL
 		
 		
 		
-		
+public void scroll1(WebElement element) {
+	  
+	Actions actions = new Actions(driver);
+	actions.moveToElement(element);
+	actions.perform();
+	 
+  }
+
 		
 		
 		

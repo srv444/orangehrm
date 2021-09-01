@@ -1,4 +1,4 @@
-package Smoke;
+package smoke;
 
 import java.time.Duration;
 

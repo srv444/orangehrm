@@ -1,11 +1,13 @@
-package Smoke;
+package smoke;
 
 import java.net.MalformedURLException;
+import java.util.List;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
@@ -29,6 +31,14 @@ public class TestClass extends MetodosComunes {
 	@FindBy(id="btnLogin")
 	WebElement btn_login;
 	
+	
+	@FindBy(id="btnLogin")
+	List<WebElement> sbtn_login;
+	
+	
+	
+	
+	
 	@Parameters(value= {"browser"})
 	@BeforeTest
 	public void initWebElements(@Optional("chrome") String browser) throws MalformedURLException {
@@ -42,6 +52,10 @@ public class TestClass extends MetodosComunes {
 		txt_user.sendKeys("Admin");
 		txt_password.sendKeys("admin123");
 		btn_login.click();
+		btn_login.isDisplayed();
+		Assert.fail("The text is not in the list: " + "");
+		System.out.println();
+		
 	}
 	
 	@AfterTest

@@ -34,6 +34,7 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -269,11 +270,15 @@ public class Base extends TestListenerAdapter {
 	 */
 	public void reviewElement(WebElement element) throws Exception {
 		try {
-			// set timeout 
+			// set timeout
 			wait = new WebDriverWait(driver, Duration.ofSeconds(60));
 			wait.until(ExpectedConditions.visibilityOf(element));
 			highlighElement(element);
-			Reporter.log("Web Element is visible by locatior ---> <b>" + element.toString().split("->")[1]+"</b>", true);
+			if (element.toString().contains("By.") == true) {
+				Reporter.log("Web Element is visible by locatior ---> <b> " + element.toString().split("By.")[1] + "</b> ",true);
+			} else if (element.toString().contains("->") == true) {
+				Reporter.log("Web Element is visible by locatior ---> <b>" + element.toString().split("->")[1] + "</b> ",true);
+			};
 		} catch (Exception e) {
 			Assert.fail("Web Element is not visible: " + element.toString());
 			e.printStackTrace();
@@ -291,10 +296,42 @@ public class Base extends TestListenerAdapter {
 	public void scroll(WebElement element) throws Exception {
 		try {
 			((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+			
+			if (element.toString().contains("By.") == true) {
+				Reporter.log("Web element was clicked by locatior ---> <b> " + element.toString().split("By.")[1] + "</b> ",true);
+			} else if (element.toString().contains("->") == true) {
+				Reporter.log("Web element was clicked by locatior ---> <b> " + element.toString().split("->")[1] + "</b> ",true);
+			}
 		} catch (Exception e) {
-			Reporter.log("Its not posible to Scroll to the Web element by locatior ---> <b>" + element.toString().split("By.")[1]+"</b>", true);
+			Reporter.log("Its not posible to Scroll to the Web element by locatior ---> <b>"
+					+ element.toString().split("By.")[1] + "</b>", true);
 		}
 	}// end scroll
+	
+	/**
+	 * @throws Exception
+	 * @Description scroll in to view webElementw with Action class
+	 * @Author Sergio Ramones
+	 * @Date 01-SEP-2021
+	 * @Parameter WebElement
+	 * @return N/A
+	 */
+	public void scrollAction(WebElement element) {
+		try {
+		Actions actions = new Actions(driver);
+		actions.moveToElement(element);
+		actions.perform();
+		if (element.toString().contains("By.") == true) {
+			Reporter.log("Web element was clicked by locatior ---> <b> " + element.toString().split("By.")[1] + "</b> ",true);
+		} else if (element.toString().contains("->") == true) {
+			Reporter.log("Web element was clicked by locatior ---> <b> " + element.toString().split("->")[1] + "</b> ",true);
+		}
+	} catch (Exception e) {
+		Reporter.log("Its not posible to Scroll to the Web element by locatior ---> <b>"
+				+ element.toString().split("By.")[1] + "</b>", true);
+	}
+		 
+	  }
 
 	/**
 	 * @throws Exception
@@ -352,17 +389,17 @@ public class Base extends TestListenerAdapter {
 			element.click();
 			if(element.toString().contains("By.")==true) {
 				Reporter.log("Web element was clicked by locatior ---> <b> " + element.toString().split("By.")[1]+"</b> ", true);
-			}if(element.toString().contains("->")==true) {
+			}else if(element.toString().contains("->")==true) {
 				Reporter.log("Web element was clicked by locatior ---> <b> " + element.toString().split("->")[1]+"</b> ", true);
 			}
 			
 		} catch (ArrayIndexOutOfBoundsException e) {
 			Reporter.log("ArrayIndexOutOfBoundsException: " + element.toString(), true);
-			e.printStackTrace();
+//			e.printStackTrace();
 			
 		} catch (Exception e) {
 			Reporter.log("Web element is not possible to clicked: " + element.toString(), true);
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 	}
 
@@ -383,7 +420,7 @@ public class Base extends TestListenerAdapter {
 					Assert.fail("The Text is not in the list: " + text);
 					break;
 				}
-
+ 
 				if (element.get(i).getText().contains(text)) {
 					scroll(element.get(i));
 					highlighElement(element.get(i));
@@ -393,10 +430,10 @@ public class Base extends TestListenerAdapter {
 				}
 
 			} // end for
-			Reporter.log("The Element in the list was selected: " + text);
+			Reporter.log("The Element in the list was selected: <b>" + text+"</b>");
 
 		} catch (Exception e) {
-			Reporter.log("The Element is not the list: " + text);
+			Reporter.log("The Element is not the list: <b>" + text+"</b>");
 			e.printStackTrace();
 		}
 	}
@@ -561,10 +598,11 @@ public class Base extends TestListenerAdapter {
 		 * @return N/A
 		 */
 		public void takeScreenShot() {
+			osName = getOSname();
 			switch (osName) {
 			case "Mac":
 			case "Linux":
-				filePath = "/execution_results/" + driver.getTitle() + "/screenshots/";
+				filePath = "/execution_results/screenshots/";
 				break;
 			case "Windows":
 				filePath = ".\\execution_results\\screenshots\\";
@@ -598,10 +636,28 @@ public class Base extends TestListenerAdapter {
 		 * @Parameter WebElement 
 		 * @return N/A
 		 */
-		public void clickJScript(WebElement button) {
+		public void clickJScript(WebElement element) {
+			try {
+				JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+				jsExecutor.executeScript("arguments[0].click();", element);
 
-			JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-			jsExecutor.executeScript("arguments[0].click();", button);
+				if (element.toString().contains("By.") == true) {
+					Reporter.log("Web element was clicked by locatior ---> <b> " + element.toString().split("By.")[1]
+							+ "</b> ", true);
+				}
+				else if (element.toString().contains("->") == true) {
+					Reporter.log("Web element was clicked by locatior ---> <b> " + element.toString().split("->")[1]
+							+ "</b> ", true);
+				}
+
+			} catch (ArrayIndexOutOfBoundsException e) {
+				Reporter.log("ArrayIndexOutOfBoundsException: " + element.toString(), true);
+				e.printStackTrace();
+
+			} catch (Exception e) {
+				Reporter.log("Web element is not possible to clicked: " + element.toString(), true);
+				e.printStackTrace();
+			}
 		}
 		
 		
@@ -617,7 +673,7 @@ public class Base extends TestListenerAdapter {
 		 */
 		public void navigateToURL(String url) throws InterruptedException {
 			driver.navigate().to(url);
-			Reporter.log("The URL was properly open [ "+url+" ] ", true);
+			Reporter.log("The URL was properly open <b> [ "+url+" ]</b> ", true);
 			waitLoadPage();
 		}
 		
@@ -631,7 +687,7 @@ public class Base extends TestListenerAdapter {
 		 * @throws InterruptedException 
 		 */
 		public void waitLoadPage() throws InterruptedException {
-			WebDriverWait wait = new WebDriverWait(driver, 60);
+			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
 			wait.until(webDriver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").toString().equals("complete"));
 			 Thread.sleep(5000);
 		}
@@ -655,13 +711,13 @@ public class Base extends TestListenerAdapter {
 					if(el.getText().equals(text)) {
 						scroll(el);
 						flag=true;
-						Reporter.log("The Element in the list: " + text, true);
+						Reporter.log("The Element in the list: <b> " + text+ "</b>", true);
 					}
 					
 				}
 				
 				if(flag==false) {
-					Assert.fail("The text is not in the list: " + text);
+					Assert.fail("The text is not in the list: <b> " + text+ "</b>");
 				}
 				
 
@@ -685,7 +741,7 @@ public class Base extends TestListenerAdapter {
 				
 				scroll(element);
 				text = element.getText();
-				Reporter.log("Text got form application is: " + text, true);
+				Reporter.log("Text got form application is: <b>[" + text+"] </b>", true);
 			} catch (Exception e) {
 				Assert.fail("It's not possible to get the text: " + text);
 				e.printStackTrace();
@@ -796,7 +852,7 @@ public class Base extends TestListenerAdapter {
 			while (attempts < 5) {
 				try {
 					action.selectByValue(selectValue);
-					Reporter.log("Element was selected: " + selectValue, true);
+					Reporter.log("Element was selected: <b>[ " + selectValue+" ]</b>", true);
 					break;
 				} catch (StaleElementReferenceException e) {
 						Reporter.log("Cannot select element by value: " + selectValue, true);
@@ -900,14 +956,14 @@ public class Base extends TestListenerAdapter {
 				      boolean isEqual = actualValuesString.equals(values);    
 				      
 				      if(isEqual==true) {
-				    	  Reporter.log("Actual Elements  : " + actualValuesString, true);
-				    	  Reporter.log("Expected Elements: " + values, true);
+				    	  Reporter.log("Actual Elements  : <b>[ " + actualValuesString+" ]</b>", true);
+				    	  Reporter.log("Expected Elements: <b>[" + values+" ]</b>", true);
 				        Assert.assertTrue(true, "Values are in the dropdown");
 				        
 				      }else {
 				  
-				    	  Reporter.log("Actual Elements  : " + actualValuesString, true);
-				    	  Reporter.log("Expected Elements: " + values, true);
+				    	  Reporter.log("Actual Elements  : <b>[ "+ actualValuesString+" ]</b>", true);
+				    	  Reporter.log("Expected Elements: <b>[" + values+" ]</b>", true);
 				    	  Assert.fail("Values are not in the dropdown");
 				    	 
 				      }
@@ -956,7 +1012,7 @@ public class Base extends TestListenerAdapter {
 		 *
 		 **/
 		public static void reporter(String text){
-			 Reporter.log("Reporter Log [ " + text+ " ]",true);
+			 Reporter.log("Reporter Log <b> [ " + text+ " ] </b>",true);
 		 
 		}
 		
