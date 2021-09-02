@@ -47,7 +47,7 @@ public class Examen {
 
 		    }
 		 
-
+		    System.out.println(count);
 	        return temp;
 		
 	}

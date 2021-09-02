@@ -1,11 +1,16 @@
 package commons;
 
+import java.io.IOException;
+
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 
 public class ScreenshotOfFailedTest extends Base implements ITestListener{
+
 	
+	
+
 	/**
 	 * @throws N/A
 	 * @Description get the test suite Name that its failing then take an screenshot if it failed.
@@ -16,25 +21,30 @@ public class ScreenshotOfFailedTest extends Base implements ITestListener{
 	 */
 	@Override
 	public void onTestFailure(ITestResult result) {
-
+		takeScreenShot();
 		Reporter.log("********* Error "+ result.getStatus()+ " test has failed **********",true);
 		Reporter.log("********* Error "+ result.getTestName()+ " test has failed **********",true);
 		Reporter.log("********* Error "+ result.getMethod()+ " test has failed **********",true);
 		Reporter.log("********* Error "+ result.getName()+ " test has failed **********",true);
-		try {
-			VideoRecorder_utlity.stopRecord();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		takeScreenShot();
+	
+			
+			try {
+				VideoRecorder_utlity.stopRecord();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+
+			
 		if (driver != null) {
-			driver.close();
-			driver.quit();
+			
+			getDriver().close();
+			getDriver().quit();
+			driver =null;
+			setDriver(driver);
 			Reporter.log("Driver was quited ", true);
-		} else {
-			Reporter.log("Driver was not found ", true);
-		}
+		} 
 	}//end OntestFailure
 	
 		

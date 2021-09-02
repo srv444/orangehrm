@@ -1,11 +1,8 @@
 package javabasics;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
 
 public class Hikes {
 	
@@ -48,6 +45,7 @@ public class Hikes {
         String path = bufferedReader.readLine();
 
         int result = countingValleys(steps, path);
+        System.out.println(result);
 //        bufferedWriter.write(String.valueOf(result));
 //        bufferedWriter.newLine();
 

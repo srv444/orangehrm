@@ -22,8 +22,10 @@ public class TestClass extends MetodosComunes {
 	WebDriver driver;
 	String url =  System.getProperty("URL");
 	
-	@FindBy(id="txtUsername")
-	WebElement txt_user;
+	
+	
+	@FindBy(xpath="//input[@id='txtUsername']")
+	WebElement txt_userName;
 	
 	@FindBy(id="txtPassword")
 	WebElement txt_password;
@@ -49,7 +51,7 @@ public class TestClass extends MetodosComunes {
 	}
 	@Test
 	public void probarGrid() throws MalformedURLException {
-		txt_user.sendKeys("Admin");
+		txt_userName.sendKeys("Admin");
 		txt_password.sendKeys("admin123");
 		btn_login.click();
 		btn_login.isDisplayed();

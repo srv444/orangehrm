@@ -1,10 +1,8 @@
 package smoke;
 
 import java.net.MalformedURLException;
-import java.time.Duration;
 import java.util.List;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -18,7 +16,6 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Test;
 
 import base.MetodosComunes;
-import commons.PropFileHelper;
 
 public class LiverPool extends MetodosComunes{
 	WebDriver driver;
@@ -47,7 +44,7 @@ public class LiverPool extends MetodosComunes{
 	@Test
 	public void liverpool() {
 		
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+		WebDriverWait wait = new WebDriverWait(driver, 60);
 		wait.until(ExpectedConditions.visibilityOf(btn_dropDownShortBy));
 		btn_dropDownShortBy.click();
 		String option = "2";

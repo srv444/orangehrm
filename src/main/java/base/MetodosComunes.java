@@ -9,7 +9,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
@@ -51,7 +50,7 @@ public WebDriver initBrowser(String URL, String browserName) throws MalformedURL
 	String remoteURL=System.getProperty("URL_REMOTE");
 	DesiredCapabilities desCap = new DesiredCapabilities();
 	ChromeOptions option = new ChromeOptions();
-	EdgeOptions edgOption = new EdgeOptions();
+//	EdgeOptions edgOption = new EdgeOptions();
 	FirefoxOptions fOption = new FirefoxOptions();
 	switch (browserName) {
 
@@ -81,9 +80,9 @@ public WebDriver initBrowser(String URL, String browserName) throws MalformedURL
 
 		if (remote == false) {
 			System.setProperty("webdriver.edge.driver", projectPath + "\\msedgedriver\\msedgedriver.exe");
-			edgOption.addArguments("--incognito");
-			edgOption.addArguments("--start-maximized");
 			driver = new EdgeDriver();
+			driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+			driver.manage().window().maximize();
 			driver.get(URL);
 
 		} else {

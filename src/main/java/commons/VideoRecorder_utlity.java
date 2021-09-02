@@ -64,6 +64,8 @@ public class VideoRecorder_utlity extends ScreenRecorder
 	}
 
 	public static void stopRecord() throws Exception {
+		if(screenRecorder!=null) {
 		screenRecorder.stop();
+		}
 	}
 }

@@ -6,8 +6,6 @@ import java.net.SocketException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-//import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -19,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.MutableCapabilities;
@@ -51,17 +50,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Base extends TestListenerAdapter {
 	
-	public static Init page;
-	protected static WebDriver driver;
+	public  Init page;
+	protected static  WebDriver driver;
 	WebDriverWait wait;
 	String filePath;
-	private static String chromeDriver, geckoDriver, msedgeDriver;
-	public static String osName = System.getProperty("os.name");
+	public  String chromeDriver, geckoDriver, msedgeDriver;
+	public  String osName = System.getProperty("os.name");
 	public static final String USERNAME = "DreamJobCentral";
 	public static final String ACCESS_KEY = "3b0223bc-a26a-422e-a4e5-9d138efefb66";
 	public static final String URL = "https://" + USERNAME + ":" + ACCESS_KEY + "@ondemand.saucelabs.com:443/wd/hub";
 
-	
+	/**
+	 * @throws IOException 
+	 * @Description: Constructor that will initialize class varible ok driver
+	 * @Author Sergio Ramones
+	 * @Date 02-SEP-2021 
+	 * @Parameter WebDriver
+	 */
+	public Base(WebDriver driver) throws IOException {
+		Base.driver = driver;
+		 PropFileHelper obj = new PropFileHelper();
+		 obj.getSystemProp();
+		
+	}// end constructor
 	/**
 	 * @throws IOException 
 	 * @Description: Constructor that will initialize driver paths and also driver
@@ -71,8 +82,9 @@ public class Base extends TestListenerAdapter {
 	 */
 	public Base(RemoteWebDriver driver) throws IOException {
 		Base.driver = driver;
-
-
+		 PropFileHelper obj = new PropFileHelper();
+		 obj.getSystemProp();
+		
 	}// end constructor
 
 	/**
@@ -92,8 +104,18 @@ public class Base extends TestListenerAdapter {
 	 * @Date 04-JUN-2021
 	 * @Parameter N/A
 	 */
-	public static WebDriver getDriver() {
+	public  WebDriver getDriver() {
 		return driver;
+	}
+	
+	/**
+	 * @Description return driver already initialized
+	 * @Author Sergio Ramones
+	 * @Date 04-JUN-2021
+	 * @Parameter N/A
+	 */
+	public void setDriver(WebDriver driver) {
+		Base.driver=driver;
 	}
 	
 	/**
@@ -103,7 +125,7 @@ public class Base extends TestListenerAdapter {
 	 * @Parameter N/A
 	 * @return String
 	 */
-	public static String getOSname() {
+	public String getOSname() {
 		if (osName.contains("Mac")) {
 			osName = "Mac";
 		} else if (osName.contains("Windows")) {
@@ -121,7 +143,7 @@ public class Base extends TestListenerAdapter {
 	 * @Date 04-JUN-2021 
 	 * @Parameter N/A
 	 */
-	public static void setDriverPaths() {
+	public void setDriverPaths() {
 		osName = getOSname();
 		String path = System.getProperty("user.dir");
 		
@@ -149,10 +171,11 @@ public class Base extends TestListenerAdapter {
 	 * @Parameter String
 	 * @return WebDriver
 	 */
-	public static WebDriver startDriver(String url) {
+	public WebDriver startDriver(String url) {
 		try {
 			// set the path according to the Operating System that we are using
 			setDriverPaths();
+		
 			boolean remote = Boolean.parseBoolean(System.getProperty("REMOTE"));
 			MutableCapabilities sauceOptions = new MutableCapabilities();
 			// case to initialize driver with the specific browser that we have selected.
@@ -230,9 +253,6 @@ public class Base extends TestListenerAdapter {
 					driver.get(url);
 					Reporter.log("Edge browser opened with URL ---> <b>" +url+"</b>", true);
 				} else {
-//					option3.addArguments("--incognito");
-//					option3.addArguments("--start-maximized");
-//					option3.addArguments("--whitelisted-ips");
 					driver = new EdgeDriver(option3);
 					driver.manage().window().maximize();
 					driver.manage().timeouts().implicitlyWait(1,TimeUnit.SECONDS);
@@ -242,9 +262,7 @@ public class Base extends TestListenerAdapter {
 				}
 				break;
 			default:
-				Reporter.log(
-						"Driver can't be initialited, ensure that you have selected the proper browser: " + System.getProperty("BROWSER"),
-						true);
+				Reporter.log("Driver can't be initialited, ensure that you have selected the proper browser: " + System.getProperty("BROWSER"), true);
 
 			}// end switch
 			
@@ -270,8 +288,7 @@ public class Base extends TestListenerAdapter {
 	 */
 	public void reviewElement(WebElement element) throws Exception {
 		try {
-			// set timeout
-			wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+			wait = new WebDriverWait(driver, 60);
 			wait.until(ExpectedConditions.visibilityOf(element));
 			highlighElement(element);
 			if (element.toString().contains("By.") == true) {
@@ -331,7 +348,7 @@ public class Base extends TestListenerAdapter {
 				+ element.toString().split("By.")[1] + "</b>", true);
 	}
 		 
-	  }
+	  }//end scrollAction
 
 	/**
 	 * @throws Exception
@@ -381,7 +398,7 @@ public class Base extends TestListenerAdapter {
 	 * @Parameter WebElement
 	 * @return N/A
 	 */
-	public void click(WebElement element)  {
+	public void click(WebElement element) throws Exception  {
 		try {
 			reviewElement(element);
 			scroll(element);
@@ -395,11 +412,11 @@ public class Base extends TestListenerAdapter {
 			
 		} catch (ArrayIndexOutOfBoundsException e) {
 			Reporter.log("ArrayIndexOutOfBoundsException: " + element.toString(), true);
-//			e.printStackTrace();
+
 			
-		} catch (Exception e) {
+		} catch (ElementClickInterceptedException e) {
 			Reporter.log("Web element is not possible to clicked: " + element.toString(), true);
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 
@@ -687,7 +704,7 @@ public class Base extends TestListenerAdapter {
 		 * @throws InterruptedException 
 		 */
 		public void waitLoadPage() throws InterruptedException {
-			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+			WebDriverWait wait = new WebDriverWait(driver, 60);
 			wait.until(webDriver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").toString().equals("complete"));
 			 Thread.sleep(5000);
 		}
@@ -797,8 +814,7 @@ public class Base extends TestListenerAdapter {
 		 */
 		public void closeBrowser() throws SocketException, InterruptedException  {
 			if (driver != null) {
-				waitLoadPage();
-				driver.close();
+
 				driver.quit();
 				Reporter.log("Driver was quited ", true);
 			} else {
@@ -1025,14 +1041,41 @@ public class Base extends TestListenerAdapter {
 		 * @return N/A
 		 *
 		 **/
-		public void validateExpectedText(String actual, String expected) {
+		public void validateExpectedText(String expected, String actual) {
 			try {
-			Assert.assertEquals(actual, expected);
-			reporter(actual+" is equal to " + expected);
-			}catch(AssertionError e) {
-				reporter(e.toString());
+
+			Assert.assertEquals(removeBlankSpaces(removeLineBreaks(expected)), removeBlankSpaces(removeLineBreaks(actual)));
+			reporter(removeLineBreaks(expected)+" ] IS EQUAL TO [" + removeLineBreaks(actual));
+			}catch(AssertionError  e) {
+				Assert.fail("text are not matching <b> expeected:  [ " + removeLineBreaks(expected) +" ] and actaual: [ "+removeLineBreaks(actual)+" ] <b>");
 			}
 		}
+		
+		/**
+		 * @throws Exception
+		 * @Description Remove Line breaks from String variable
+		 * @Author Sergio Ramones
+		 * @Date 02-SEP-2021 
+		 * @Parameter String
+		 * @return String
+		 *
+		 **/
+		public String removeLineBreaks(String text) {
+			 return text.replaceAll("\n", "");
+		 }
+		 
+		/**
+		 * @throws Exception
+		 * @Description Remove blank spaces from String variable
+		 * @Author Sergio Ramones
+		 * @Date 02-SEP-2021 
+		 * @Parameter String
+		 * @return String
+		 *
+		 **/
+			public String removeBlankSpaces(String text) {
+				 return text.replaceAll(" ", "");
+			 }
 		
 		/**
 		 * @throws InterrupedException
@@ -1043,7 +1086,7 @@ public class Base extends TestListenerAdapter {
 		 * @return N/A
 		 *
 		 **/
-		public static void highlighElement(WebElement element) throws InterruptedException {
+		public void highlighElement(WebElement element) throws InterruptedException {
 			if (Boolean.parseBoolean(System.getProperty("HIGHLIGH")) == true) {
 				JavascriptExecutor js = (JavascriptExecutor) driver;
 				js.executeScript("arguments[0].setAttribute('style', 'background: yellow; border:  solid red');",element);
@@ -1058,22 +1101,19 @@ public class Base extends TestListenerAdapter {
 		 * @throws Exception
 		 * @Description Verify element exist
 		 * @Author Sergio Ramones
-		 * @Date 04-JUN-2021 
+		 * @Date 04-JUN-2021
 		 * @Parameter WebElement
 		 * @return boolean
 		 *
 		 **/
 		public boolean verifyElementExist(List<WebElement> element) {
 			try {
-				if (element.size() > 0) {
+					element.size();
 					return true;
-				} else {
-					return false;
-				}
+				
 			} catch (NoSuchElementException e) {
 				return false;
 			}
 		}
-	
 	
 }//end class
