@@ -8,19 +8,17 @@ import java.util.Properties;
 public class PropertiesFile {
 
 	private Properties m_properties = new Properties();
-
+	
 	/**
-	 * Loads a Properties file.
-	 *
-	 * @param fileName properties file path
-	 * @throws IOException if an error occurred when reading from the Properties
-	 *                     file.
+	 * @throws IOException
+	 * @Description  Loads a Properties file
+	 * @Author Sergio Ramones
+	 * @Date 04-JUN-2021
+	 * @Parameter String 
+	 * @return N/A
 	 */
 	public PropertiesFile(String fileName) throws IOException {
 		FileInputStream fis = null;
-		//
-		// Parse the Properties file
-		//
 		try {
 			fis = new FileInputStream(new File(fileName));
 			m_properties.load(fis);
@@ -30,11 +28,14 @@ public class PropertiesFile {
 			}
 		}
 	}
-
+	
 	/**
-	 * Returns the properties loaded.
-	 * 
-	 * @return loaded properties.
+	 * @throws IOException
+	 * @Description  Returns the properties loaded.
+	 * @Author Sergio Ramones
+	 * @Date 04-JUN-2021
+	 * @Parameter String 
+	 * @return Properties
 	 */
 	public Properties getProperties() {
 		return m_properties;

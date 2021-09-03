@@ -11,7 +11,15 @@ public class PropFileHelper {
 
 	private static Properties systemProp = null;
 	
-	
+	/**
+	 * @throws N/A
+	 * @Description Constructor read system properties file 
+	 * @Author Sergio Ramones
+	 * @Date 04-JUN-2021
+	 * @Parameter N/A
+	 * @return N/A
+	 * @throws N/A 
+	 */
 	public PropFileHelper() {
 		getSystemProp();
 	}

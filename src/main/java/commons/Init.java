@@ -8,7 +8,6 @@ import org.testng.Reporter;
 public class Init {
 	public WebDriver driver;
 
-//	AndroidDriver<AndroidElement> driverAndroid;
 	/**
 	 * @throws N/A
 	 * @Description constructor for initialize the driver

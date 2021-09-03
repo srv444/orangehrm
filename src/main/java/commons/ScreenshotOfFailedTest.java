@@ -1,7 +1,5 @@
 package commons;
 
-import java.io.IOException;
-
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 import org.testng.Reporter;

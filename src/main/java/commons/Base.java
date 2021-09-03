@@ -310,7 +310,7 @@ public class Base extends TestListenerAdapter {
 	 * @Parameter WebElement
 	 * @return N/A
 	 */
-	public void scroll(WebElement element) throws Exception {
+	public void scrollJScript(WebElement element) throws Exception {
 		try {
 			((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
 			
@@ -361,7 +361,7 @@ public class Base extends TestListenerAdapter {
 	public void setText(WebElement element, String text) throws Exception {
 		try {
 			reviewElement(element);
-			scroll(element);
+			scrollJScript(element);
 			element.clear();
 			element.sendKeys(text);
 			Reporter.log("Text was entered: <b><br>[ "+ text+" ]</br></b>", true);
@@ -401,7 +401,7 @@ public class Base extends TestListenerAdapter {
 	public void click(WebElement element) throws Exception  {
 		try {
 			reviewElement(element);
-			scroll(element);
+			scrollJScript(element);
 			highlighElement(element);
 			element.click();
 			if(element.toString().contains("By.")==true) {
@@ -439,7 +439,7 @@ public class Base extends TestListenerAdapter {
 				}
  
 				if (element.get(i).getText().contains(text)) {
-					scroll(element.get(i));
+					scrollJScript(element.get(i));
 					highlighElement(element.get(i));
 					click(element.get(i));
 					
@@ -517,16 +517,14 @@ public class Base extends TestListenerAdapter {
 	 * @return String
 	 */
 	public String getRandomNumber(int length) {
-		Random random = new Random();
-		int randomNumber = 0;
-		Boolean flag = true;
-		while (flag) {
-			randomNumber = random.nextInt();
-			if (Integer.toString(randomNumber).length() == length && !Integer.toString(randomNumber).startsWith("-")) {
-				flag = false;
-			}
+		Random numeroRandom = new Random();
+		StringBuilder Str = new StringBuilder ();
+		
+		for (int i=0; i<length;i++) {
+			Str.append(numeroRandom.nextInt(length));
 		}
-		return String.valueOf(randomNumber);
+		
+		return Str.toString();
 	}
 	
 	/**
@@ -718,15 +716,15 @@ public class Base extends TestListenerAdapter {
 		 * @Parameter List WebElement, text
 		 * @return N/A
 		 */
-		public void verifyElementByValue(List<WebElement> element, String text) throws Exception {
+		public void verifyElementByValue(List<WebElement> elements, String text) throws Exception {
 			try {
 				waitLoadPage();
 				
 				boolean flag = false;
 				
-				for(WebElement el : element) {
-					if(el.getText().equals(text)) {
-						scroll(el);
+				for(WebElement element : elements) {
+					if(element.getText().equals(text)) {
+						scrollJScript(element);
 						flag=true;
 						Reporter.log("The Element in the list: <b> " + text+ "</b>", true);
 					}
@@ -756,7 +754,7 @@ public class Base extends TestListenerAdapter {
 			String text = null;
 			try {
 				
-				scroll(element);
+				scrollJScript(element);
 				text = element.getText();
 				Reporter.log("Text got form application is: <b>[" + text+"] </b>", true);
 			} catch (Exception e) {
