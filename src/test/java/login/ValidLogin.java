@@ -17,32 +17,33 @@ import commons.Base;
 public class ValidLogin extends Base{
 	String url =  System.getProperty("URL");
 	WebDriver driver;
-	Login page;
+	Login login;
 	
 	
 	@Parameters(value= {"browser"})
 	@BeforeTest
 	public void iniciarExplorador(@Optional("chrome") String browser) throws IOException {
 		driver = startDriver(url);
-		 page = new Login(driver);
+		login = new Login(driver);
 	}
 	
 	
 	@Test(priority = 1)
 	public void loginInvalido() throws Exception{
-		page.invalidLogin("Admin", "admin", "Invalid credentials");
+		login.invalidLogin("Admin", "admin", "Invalid credentials");
+		page.getInitPage(Login.class).invalidLogin("Admin", "admin", "Invalid credentials");
 
 	}
 	
 	@Test(priority = 2)
 	public void loginValido() throws Exception{
-		page.validLogin("Admin", "admin123");
-		page.cerrarSession();
+		login.validLogin("Admin", "admin123");
+		login.cerrarSession();
 	}
 	
 	@Test(priority = 3)
 	public void changePassword() throws Exception{
-		page.resetPassword("Test", "Please enter your username to identify your account to reset your password.", "Please contact HR admin in order to reset the password\n Close");
+		login.resetPassword("Test", "Please enter your username to identify your account to reset your password.", "Please contact HR admin in order to reset the password\n Close");
 	}
 	
 

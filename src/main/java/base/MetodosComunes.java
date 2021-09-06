@@ -67,7 +67,6 @@ public WebDriver initBrowser(String URL, String browserName) throws MalformedURL
 			option.addArguments("--incognito");
 			option.addArguments("--start-maximized");
 			desCap.setCapability("browserName", "chrome");
-//			desCap .setCapability("version", "92.0");
 			desCap.setCapability(ChromeOptions.CAPABILITY, option);
 			driver = new RemoteWebDriver(new URL(remoteURL), desCap);
 			driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);

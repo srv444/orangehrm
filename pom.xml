@@ -26,6 +26,12 @@
 			<artifactId>selenium-java</artifactId>
 			<version>3.141.59</version>
 		</dependency>
+		<!-- Appium libraries -->
+		<dependency>
+			<groupId>io.appium</groupId>
+			<artifactId>java-client</artifactId>
+			<version>7.5.1</version>
+		</dependency>
 		<!-- TestNG libraries -->
 		<dependency>
 			<groupId>org.testng</groupId>

@@ -56,9 +56,10 @@ public class Base extends TestListenerAdapter {
 	String filePath;
 	public  String chromeDriver, geckoDriver, msedgeDriver;
 	public  String osName = System.getProperty("os.name");
-	public static final String USERNAME = "DreamJobCentral";
-	public static final String ACCESS_KEY = "3b0223bc-a26a-422e-a4e5-9d138efefb66";
-	public static final String URL = "https://" + USERNAME + ":" + ACCESS_KEY + "@ondemand.saucelabs.com:443/wd/hub";
+	public static final String USERNAME = "localhost";
+	public static final String ACCESS_KEY = "4446";
+	public static final String URL = "https://" + USERNAME + ":" + ACCESS_KEY + "/wd/hub/";
+
 
 	/**
 	 * @throws IOException 
@@ -187,10 +188,9 @@ public class Base extends TestListenerAdapter {
 				ChromeOptions option = new ChromeOptions();
 				
 				if (remote == true) {
-					option.setExperimentalOption("w3c", true);
-					option.setCapability("platformName", System.getProperty("OPERATING_SYSTEM"));
-					option.setCapability("browserVersion", System.getProperty("BROWSERVERSION"));
-					option.setCapability("sauce:options", sauceOptions);
+				
+					option.setCapability("browserName", "chrome");
+					option.setCapability(ChromeOptions.CAPABILITY, option);
 					driver = new RemoteWebDriver(new URL(URL), option);
 					driver.manage().window().maximize();
 					driver.manage().timeouts().implicitlyWait(1,TimeUnit.SECONDS);

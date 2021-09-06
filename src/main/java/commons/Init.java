@@ -5,8 +5,13 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Reporter;
 
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.pagefactory.AppiumFieldDecorator;
+
 public class Init {
 	public WebDriver driver;
+	public AndroidDriver<AndroidElement> mobileDriver;
 
 	/**
 	 * @throws N/A
@@ -31,10 +36,22 @@ public class Init {
 	public Init(WebDriver driver) {
 		this.driver = driver;
 	}
+	
+	/**
+	 * @throws N/A
+	 * @Description constructor for initialize AndroiDriver
+	 * @Author Sergio Ramones
+	 * @Date 06-SEP-2021
+	 * @Parameter AndroidDriver<AndroidElement>
+	 * @return N/A
+	 */
+	public Init(AndroidDriver<AndroidElement> mobileDriver) {
+		this.mobileDriver = mobileDriver;
+	}
 
 	/**
-	 * @throws N/a
-	 * @Description Create and return a New Page
+	 * @throws Exception
+	 * @Description get page object and initialize it for WebDriver
 	 * @Author Sergio Ramones
 	 * @Date 04-JUN-2021
 	 * @Parameter Class
@@ -53,6 +70,28 @@ public class Init {
 		}
 	}// End getInstance method
 	
+	/**
+	 * @throws Exception
+	 * @Description get page object and initialize it for AndroidDRiver
+	 * @Author Sergio Ramones
+	 * @Date 04-JUN-2021
+	 * @Parameter Class
+	 * @return initialized class
+	 */
+	public <TPage extends BaseMobile> TPage getMobilePage(Class<TPage> pageClass) throws Exception {
+		try {
+			
+			Reporter.log("Page Object initializated ---> <b>" + pageClass.getName() +"</b>", true);
+			// Initialize the Page with its elements and return it.
+			PageFactory.initElements(new AppiumFieldDecorator(mobileDriver), this);
+			return PageFactory.initElements(mobileDriver, pageClass); 
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
 
 
 }// end class
