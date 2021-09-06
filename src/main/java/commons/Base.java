@@ -48,7 +48,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-public class Base extends TestListenerAdapter {
+public abstract class Base extends TestListenerAdapter {
 	
 	public  Init page;
 	protected static  WebDriver driver;

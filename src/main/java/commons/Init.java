@@ -11,7 +11,7 @@ import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 
 public class Init {
 	public WebDriver driver;
-	public AndroidDriver<AndroidElement> mobileDriver;
+//	public AndroidDriver<AndroidElement> driverA;
 
 	/**
 	 * @throws N/A
@@ -45,8 +45,8 @@ public class Init {
 	 * @Parameter AndroidDriver<AndroidElement>
 	 * @return N/A
 	 */
-	public Init(AndroidDriver<AndroidElement> mobileDriver) {
-		this.mobileDriver = mobileDriver;
+	public Init(AndroidDriver<AndroidElement> driver) {
+		this.driver = driver;
 	}
 
 	/**
@@ -83,8 +83,8 @@ public class Init {
 			
 			Reporter.log("Page Object initializated ---> <b>" + pageClass.getName() +"</b>", true);
 			// Initialize the Page with its elements and return it.
-			PageFactory.initElements(new AppiumFieldDecorator(mobileDriver), this);
-			return PageFactory.initElements(mobileDriver, pageClass); 
+			PageFactory.initElements(new AppiumFieldDecorator(driver), this);
+			return PageFactory.initElements(driver, pageClass); 
 			
 		} catch (Exception e) {
 			e.printStackTrace();

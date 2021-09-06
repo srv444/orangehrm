@@ -50,12 +50,12 @@ public class Calculator extends BaseMobile {
 	@AndroidFindBy(id = "com.sec.android.app.popupcalculator:id/calc_keypad_btn_mul")
 	private AndroidElement btn_mul;
 	
-	public Calculator(AndroidDriver<AndroidElement> mobileDriver) {
-		PageFactory.initElements(new AppiumFieldDecorator(mobileDriver), this);
+	public Calculator(AndroidDriver<AndroidElement> driver) {
+		PageFactory.initElements(new AppiumFieldDecorator(driver), this);
 	}
-	public void multiplacation(String number, String number2) {
+	public void multiplacation(String number, String number2) throws InterruptedException {
 		txt_numbers.sendKeys(number);
-		btn_mul.click();
+		click(btn_mul);
 		txt_numbers.sendKeys(number2);
 		btn_equal.click();
 		
