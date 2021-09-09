@@ -58,8 +58,9 @@ public class Login extends Base{
 	 * @return N/A
 	 */
 	public Login(WebDriver driver) throws IOException {
-		super(driver);
-		PageFactory.initElements(driver, this);;
+//		super(driver);
+		PageFactory.initElements(driver, this);
+		setDriver(driver);
 	}
 	
 	/**

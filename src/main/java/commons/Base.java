@@ -2,6 +2,7 @@ package commons;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -34,6 +35,7 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -51,14 +53,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public abstract class Base extends TestListenerAdapter {
 	
 	public  Init page;
-	protected static  WebDriver driver;
+	public static   WebDriver driver;
 	WebDriverWait wait;
 	String filePath;
 	public  String chromeDriver, geckoDriver, msedgeDriver;
 	public  String osName = System.getProperty("os.name");
 	public static final String USERNAME = "localhost";
 	public static final String ACCESS_KEY = "4446";
-	public static final String URL = "https://" + USERNAME + ":" + ACCESS_KEY + "/wd/hub/";
+	public static  String URL;// = "https://" + USERNAME + ":" + ACCESS_KEY + "/wd/hub/";
 
 
 	/**
@@ -72,6 +74,7 @@ public abstract class Base extends TestListenerAdapter {
 		Base.driver = driver;
 		 PropFileHelper obj = new PropFileHelper();
 		 obj.getSystemProp();
+		 URL =System.getProperty("URL_REMOTE");
 		
 	}// end constructor
 	/**
@@ -85,6 +88,7 @@ public abstract class Base extends TestListenerAdapter {
 		Base.driver = driver;
 		 PropFileHelper obj = new PropFileHelper();
 		 obj.getSystemProp();
+		 URL =System.getProperty("URL_REMOTE");
 		
 	}// end constructor
 
@@ -97,6 +101,7 @@ public abstract class Base extends TestListenerAdapter {
 	public Base() {
 		 PropFileHelper obj = new PropFileHelper();
 		 obj.getSystemProp();
+		 URL =System.getProperty("URL_REMOTE");
 	}
 
 	/**
@@ -163,6 +168,119 @@ public abstract class Base extends TestListenerAdapter {
 
 		}
 	}
+	
+	/**
+	 * @throws Exception
+	 * @Description WebDriver initialization selecting browser
+	 * @Author Sergio Ramones
+	 * @Date 04-JUN-2021 
+	 * @Parameter String
+	 * @return WebDriver
+	 */
+	public WebDriver startDriver(String url, String browser) {
+		try {
+			// set the path according to the Operating System that we are using
+			setDriverPaths();
+		
+			boolean remote = Boolean.parseBoolean(System.getProperty("REMOTE"));
+			MutableCapabilities sauceOptions = new MutableCapabilities();
+			DesiredCapabilities desCap = new DesiredCapabilities();
+			ChromeOptions option = new ChromeOptions();
+//			EdgeOptions edgOption = new EdgeOptions();
+			FirefoxOptions fOption = new FirefoxOptions();
+			// case to initialize driver with the specific browser that we have selected.
+			switch (browser.trim()) {
+
+			case "chrome":
+				System.setProperty("webdriver.chrome.driver", chromeDriver);
+				
+				
+				if (remote == true) {
+				
+					option.addArguments("--incognito");
+					option.addArguments("--start-maximized");
+					desCap.setCapability("browserName", "chrome");
+					desCap.setCapability(ChromeOptions.CAPABILITY, option);
+					driver = new RemoteWebDriver(new URL(URL), desCap);
+					driver.get(url);
+					Reporter.log("Chrome browser opened with URL ---> <b>" +url+"</b>", true);
+				}else {
+					option.addArguments("--incognito");
+					option.addArguments("--start-maximized");
+					option.addArguments("--whitelisted-ips");
+					driver = new ChromeDriver(option);
+					driver.manage().window().maximize();
+					driver.manage().timeouts().implicitlyWait(1,TimeUnit.SECONDS);
+					sleep(3000);
+					driver.get(url);
+					Reporter.log("Chrome browser opened with URL ---> <b>" +url+"</b>", true);
+				}
+				
+				
+ 				break;
+			case "firefox":
+				FirefoxOptions option2 = new FirefoxOptions();
+				System.setProperty("webdriver.gecko.driver", geckoDriver);
+				
+				if (remote == true) {
+					
+					option.addArguments("--incognito");
+					option.addArguments("--start-maximized");
+					desCap.setCapability("browserName", "firefox");
+					desCap.setCapability(FirefoxOptions.FIREFOX_OPTIONS, fOption);
+					driver = new RemoteWebDriver(new URL(URL), desCap);
+					driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+					driver.get(url);
+					Reporter.log("Firefox browser opened with URL ---> <b>" +url+"</b>", true);
+				}else {
+					option2.addArguments("--incognito");
+					option2.addArguments("--start-maximized");
+					option2.addArguments("--whitelisted-ips");
+					driver = new FirefoxDriver(option2);
+					driver.manage().window().maximize();
+					driver.manage().timeouts().implicitlyWait(1,TimeUnit.SECONDS);
+					driver.get(url);
+					Reporter.log("Firefox browser opened with URL ---> <b>" +url+"</b>", true);
+				}
+				break;
+			case "edge":
+				EdgeOptions option3 = new EdgeOptions();
+				System.setProperty("webdriver.edge.driver", msedgeDriver);
+				if (remote == true) {
+
+					option3.setCapability("platformName", System.getProperty("OPERATING_SYSTEM"));
+					option3.setCapability("browserVersion", System.getProperty("BROWSERVERSION"));
+					option3.setCapability("sauce:options", sauceOptions);
+					driver = new RemoteWebDriver(new URL(URL), option3);
+					driver.manage().window().maximize();
+					driver.manage().timeouts().implicitlyWait(1,TimeUnit.SECONDS);
+					driver.get(url);
+					Reporter.log("Edge browser opened with URL ---> <b>" +url+"</b>", true);
+				} else {
+					driver = new EdgeDriver(option3);
+					driver.manage().window().maximize();
+					driver.manage().timeouts().implicitlyWait(1,TimeUnit.SECONDS);
+					driver.get(url);
+					Reporter.log("Edge browser opened with URL ---> <b>" +url+"</b>", true);
+				}
+				break;
+			default:
+				Reporter.log("Driver can't be initialited, ensure that you have selected the proper browser: " + System.getProperty("BROWSER"), true);
+
+			}// end switch
+			
+			page = new Init(driver);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail("WebDriver can't be initialize");
+			
+		}
+
+		return driver;
+	}// end startDrivermethod
+	
+	
+
 
 	/**
 	 * @throws Exception
@@ -179,6 +297,7 @@ public abstract class Base extends TestListenerAdapter {
 		
 			boolean remote = Boolean.parseBoolean(System.getProperty("REMOTE"));
 			MutableCapabilities sauceOptions = new MutableCapabilities();
+			DesiredCapabilities desCap = new DesiredCapabilities();
 			// case to initialize driver with the specific browser that we have selected.
 			String browser = System.getProperty("BROWSER");
 			switch (browser.trim()) {
@@ -189,11 +308,13 @@ public abstract class Base extends TestListenerAdapter {
 				
 				if (remote == true) {
 				
-					option.setCapability("browserName", "chrome");
-					option.setCapability(ChromeOptions.CAPABILITY, option);
-					driver = new RemoteWebDriver(new URL(URL), option);
-					driver.manage().window().maximize();
-					driver.manage().timeouts().implicitlyWait(1,TimeUnit.SECONDS);
+					option.addArguments("--incognito");
+					option.addArguments("--start-maximized");
+					desCap.setCapability("browserName", "chrome");
+					
+					
+					desCap.setCapability(ChromeOptions.CAPABILITY, option);
+					driver = new RemoteWebDriver(new URL(URL), desCap);
 					sleep(3000);
 					driver.get(url);
 					Reporter.log("Chrome browser opened with URL ---> <b>" +url+"</b>", true);
@@ -288,7 +409,7 @@ public abstract class Base extends TestListenerAdapter {
 	 */
 	public void reviewElement(WebElement element) throws Exception {
 		try {
-			wait = new WebDriverWait(driver, 60);
+			wait = new WebDriverWait(driver, 5);
 			wait.until(ExpectedConditions.visibilityOf(element));
 			highlighElement(element);
 			if (element.toString().contains("By.") == true) {
@@ -811,9 +932,9 @@ public abstract class Base extends TestListenerAdapter {
 		 * @throws InterruptedException
 		 */
 		public void closeBrowser() throws SocketException, InterruptedException  {
-			if (driver != null) {
-
-				driver.quit();
+			if (driver.toString().contains("null")==false) {
+				System.out.println(driver.toString());
+				driver.close();
 				Reporter.log("Driver was quited ", true);
 			} else {
 				Reporter.log("Driver was not found ", true);

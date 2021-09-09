@@ -1,5 +1,6 @@
 package commons;
 
+import org.openqa.selenium.NoSuchSessionException;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 import org.testng.Reporter;
@@ -7,7 +8,7 @@ import org.testng.Reporter;
 public class ScreenshotOfFailedTest extends Base implements ITestListener{
 
 	
-	
+
 
 	/**
 	 * @throws N/A
@@ -19,31 +20,29 @@ public class ScreenshotOfFailedTest extends Base implements ITestListener{
 	 */
 	@Override
 	public void onTestFailure(ITestResult result) {
-		takeScreenShot();
-		Reporter.log("********* Error "+ result.getStatus()+ " test has failed **********",true);
-		Reporter.log("********* Error "+ result.getTestName()+ " test has failed **********",true);
-		Reporter.log("********* Error "+ result.getMethod()+ " test has failed **********",true);
-		Reporter.log("********* Error "+ result.getName()+ " test has failed **********",true);
-	
-			
-			try {
-				VideoRecorder_utlity.stopRecord();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+		try {
+			driver = getDriver();
 
-			
-		if (driver != null) {
-			
-			getDriver().close();
-			getDriver().quit();
-			driver =null;
-			setDriver(driver);
-			Reporter.log("Driver was quited ", true);
-		} 
-	}//end OntestFailure
+			if (driver.toString().contains("null") == false) {
+				takeScreenShot();
+				Reporter.log("********* Error " + result.getStatus() + " test has failed **********", true);
+				Reporter.log("********* Error " + result.getTestName() + " test has failed **********", true);
+				Reporter.log("********* Error " + result.getMethod() + " test has failed **********", true);
+				Reporter.log("********* Error " + result.getName() + " test has failed **********", true);
+
+				try {
+					VideoRecorder_utlity.stopRecord();
+				} catch (Exception e) {
+					Reporter.log("********* Video can't stop becaouse has not started. **********", true);
+				}
+
+			}//end if
+
+		} catch (NoSuchSessionException e) {
+			Reporter.log("********* Error " + result.getTestName()
+					+ " test has can not be executed as Session ID is null **********", true);
+		}
+	}// end OntestFailure
 	
 		
 }

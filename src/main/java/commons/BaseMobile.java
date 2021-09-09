@@ -1,11 +1,19 @@
 package commons;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.ElementClickInterceptedException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.interactions.touch.TouchActions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.Assert;
 import org.testng.Reporter;
 
 import io.appium.java_client.android.AndroidDriver;
@@ -14,11 +22,13 @@ import io.appium.java_client.android.AndroidElement;
 public abstract class BaseMobile {
 	DesiredCapabilities cap;
 	PropFileHelper obj;
-	AndroidDriver<AndroidElement> driver;
+	protected static AndroidDriver<AndroidElement> driver;
 	public  Init mobilepage;
-	public static final String USERNAME = "localhost";
-	public static final String ACCESS_KEY = "4446";
-	public static final String URLMOBILE ="http://localhost:4723/wd/hub";// "http://" + USERNAME + ":" + ACCESS_KEY + "/wd/hub/";
+	String filePath;
+	public  String osName = System.getProperty("os.name");
+	String USERNAME= "localhost";
+	String ACCESS_KEY="4723";
+	public static  String URLMOBILE;//"http://localhost:4723/wd/hub";// "http://" + USERNAME + ":" + ACCESS_KEY + "/wd/hub/";
 	//http://localhost:4723/wd/hub
 	public static String platformName, platformVersion, appActivity, appPackage, deviceName; 
 	
@@ -33,6 +43,7 @@ public abstract class BaseMobile {
 	public BaseMobile() {
 		obj = new PropFileHelper();
 		obj.getSystemProp();
+		URLMOBILE =System.getProperty("URL_MOBILE");
 		platformName = System.getProperty("PLATFORMNAME");
 		platformVersion = System.getProperty("PLATFORMVERSION");
 		appActivity = System.getProperty("APPACTIVITY");
@@ -49,7 +60,7 @@ public abstract class BaseMobile {
 	 * @throws N/A 
 	 */
 	public BaseMobile(AndroidDriver<AndroidElement> driver) {
-		this.driver=driver;
+		BaseMobile.driver=driver;
 	}
 	
 	/**
@@ -61,7 +72,7 @@ public abstract class BaseMobile {
 	 * @throws N/A 
 	 */
 	public void setDriver(AndroidDriver<AndroidElement> driver) {
-			this.driver=driver;
+		BaseMobile.driver=driver;
 	}
 	
 	/**
@@ -75,6 +86,7 @@ public abstract class BaseMobile {
 	public void setVariables() {
 		PropFileHelper obj = new PropFileHelper();
 		obj.getSystemProp();
+		URLMOBILE =System.getProperty("URL_MOBILE");
 		platformName = System.getProperty("PLATFORMNAME");
 		platformVersion = System.getProperty("PLATFORMVERSION");
 		appActivity = System.getProperty("APPACTIVITY");
@@ -138,6 +150,28 @@ public abstract class BaseMobile {
 	}//end click
 	
 	/**
+	 * @Description set text on android element 
+	 * @Author Sergio Ramones
+	 * @Date 08-SEP-2021 
+	 * @Parameter AndroidElement, String
+	 * @return N/A
+	 * @throws InterruptedException, StaleElementReferenceException
+	 * @throws N/A 
+	 */
+	public void setText(AndroidElement element, String text) throws InterruptedException {
+		try {
+			
+			element.sendKeys(text);
+			
+			Reporter.log("Text was entered: <b><br>[ "+ text+" ]</br></b>", true);
+			
+		} catch (Exception e) {
+			Assert.fail("It's not possible to insert the text: <b><br>[ "+ text+" ]</br></b>");
+			e.printStackTrace();
+		}
+	}//end click
+	
+	/**
 	 * @Description scroll on android element 
 	 * @Author Sergio Ramones
 	 * @Date 06-SEP-2021 
@@ -169,6 +203,61 @@ public abstract class BaseMobile {
 	public static void reporter(String text){
 		 Reporter.log("Reporter Log <b> [ " + text+ " ] </b>",true);
 	 
+	}
+	
+	/**
+	 * @Description get Operation System Name
+	 * @Author Sergio Ramones
+	 * @Date 04-JUN-2021 
+	 * @Parameter N/A
+	 * @return String
+	 */
+	public String getOSname() {
+		if (osName.contains("Mac")) {
+			osName = "Mac";
+		} else if (osName.contains("Windows")) {
+			osName = "Windows";
+		} else if (osName.contains("Linux")) {
+			osName = "Linux";
+		}
+		return osName;
+	}
+	
+	/**
+	 * @throws N/A
+	 * @Description take and screen shoot of specific part during the execution.
+	 * @Author Sergio Ramones
+	 * @Date 04-JUN-2021 
+	 * @Parameter N/A 
+	 * @return N/A
+	 */
+	public void takeScreenShot() {
+		osName = getOSname();
+		switch (osName) {
+		case "Mac":
+		case "Linux":
+			filePath = "/execution_results/mobileScreenshots/";
+			break;
+		case "Windows":
+			filePath = ".\\execution_results\\mobileScreenshots\\";
+			break;
+		
+		}
+		Calendar calendar = Calendar.getInstance();
+		SimpleDateFormat formater = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
+		File srcFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+		//the below method will save the screen shot in the path that we are passing 
+		try {	
+				String fullpath =  filePath + "mobile"+"_"+formater.format(calendar.getTime())+".png";
+				
+				FileUtils.copyFile(srcFile, new File(fullpath));
+				fullpath = "."+fullpath;
+				Reporter.log("******Placed screen shot in: "+ fullpath+" ******",true);
+				Reporter.log("<br> <img src='"+ fullpath+"' height='400' with='400'/></b>",true);
+			
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

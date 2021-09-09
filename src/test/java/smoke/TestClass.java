@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
 
 import base.MetodosComunes;
 import commons.PropFileHelper;
-@Listeners({commons.ScreenshotOfFailedTest.class})
+//@Listeners({commons.ScreenshotOfFailedTest.class})
 public class TestClass extends MetodosComunes {
 	WebDriver driver;
 	String url =  System.getProperty("URL");
@@ -55,7 +55,7 @@ public class TestClass extends MetodosComunes {
 		txt_password.sendKeys("admin123");
 		btn_login.click();
 		btn_login.isDisplayed();
-		Assert.fail("The text is not in the list: " + "");
+//		Assert.fail("The text is not in the list: " + "");
 		System.out.println();
 		
 	}

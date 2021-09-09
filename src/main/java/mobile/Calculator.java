@@ -54,10 +54,12 @@ public class Calculator extends BaseMobile {
 		PageFactory.initElements(new AppiumFieldDecorator(driver), this);
 	}
 	public void multiplacation(String number, String number2) throws InterruptedException {
-		txt_numbers.sendKeys(number);
+		setText(txt_numbers,number);
 		click(btn_mul);
-		txt_numbers.sendKeys(number2);
-		btn_equal.click();
+		setText(txt_numbers,number2);
+		takeScreenShot();
+		click(btn_equal);
+		takeScreenShot();
 		
 	}
 
