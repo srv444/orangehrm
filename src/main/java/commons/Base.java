@@ -2,7 +2,6 @@ package commons;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -409,7 +408,7 @@ public abstract class Base extends TestListenerAdapter {
 	 */
 	public void reviewElement(WebElement element) throws Exception {
 		try {
-			wait = new WebDriverWait(driver, 5);
+			wait = new WebDriverWait(driver, 60);
 			wait.until(ExpectedConditions.visibilityOf(element));
 			highlighElement(element);
 			if (element.toString().contains("By.") == true) {
